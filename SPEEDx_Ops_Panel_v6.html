@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPEEDx — Ops Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0c2340;
+  --navy2: #0f2d52;
+  --blue: #185fa5;
+  --accent: #3b82f6;
+  --bg: #060e1a;
+  --bg2: #0d1f35;
+  --bg3: #112540;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(59,130,246,0.25);
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --muted2: #cbd5e1;
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.15);
+  --orange: #f97316;
+  --orange-dim: rgba(249,115,22,0.15);
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.15);
+  --yellow: #eab308;
+  --yellow-dim: rgba(234,179,8,0.15);
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* TOPBAR */
+.topbar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-logo { height: 24px; opacity: 0.9; }
+.topbar-divider { width: 1px; height: 20px; background: var(--border); }
+.topbar-title {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-time {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* LAYOUT */
+.layout { display: flex; height: calc(100vh - 52px); margin-top: 52px; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 200px;
+  min-width: 200px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 20px 0;
+  height: 100%;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.sidebar-section {
+  padding: 0 16px;
+  margin-bottom: 24px;
+}
+.sidebar-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  color: var(--muted2);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s;
+  margin-bottom: 2px;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.nav-item:hover { background: var(--border); color: var(--text); }
+.nav-item.active { background: rgba(59,130,246,0.12); color: var(--accent); }
+.nav-icon { font-size: 14px; width: 18px; text-align: center; }
+
+.stats-mini {
+  margin: 0 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+}
+.stat-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.stat-row:last-child { margin-bottom: 0; }
+.stat-label { font-size: 13px; color: var(--muted); }
+.stat-val { font-family: var(--mono); font-size: 13px; font-weight: 500; }
+.stat-val.green { color: var(--green); }
+.stat-val.orange { color: var(--orange); }
+.stat-val.red { color: var(--red); }
+
+/* MAIN */
+.main { flex: 1; padding: 24px 28px; overflow-y: auto; overflow-x: hidden; height: 100%; }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  padding-bottom: 8px;
+}
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.section-sub { font-size: 14px; color: var(--muted); margin-top: 2px; }
+
+/* FILTERS */
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 52px;
+  z-index: 19;
+  background: var(--bg);
+  padding-bottom: 8px;
+}
+.filter-btn {
+  padding: 5px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--muted2);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--sans);
+}
+.filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+.filter-btn.active { background: rgba(59,130,246,0.15); border-color: var(--accent); color: var(--accent); }
+
+.search-box {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--sans);
+  outline: none;
+}
+.search-box:focus { border-color: var(--accent); }
+.search-box::placeholder { color: var(--muted); }
+
+/* TABLE */
+.table-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: visible;
+}
+table { width: 100%; border-collapse: collapse; }
+thead tr {
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 108px;
+  z-index: 10;
+}
+th {
+  padding: 10px 14px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.02); }
+td {
+  padding: 11px 14px;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+/* BADGES */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge-green { background: var(--green-dim); color: var(--green); }
+.badge-orange { background: var(--orange-dim); color: var(--orange); }
+.badge-red { background: var(--red-dim); color: var(--red); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); }
+.badge-blue { background: rgba(59,130,246,0.15); color: var(--accent); }
+.badge-gray { background: rgba(100,116,139,0.15); color: var(--muted2); }
+
+/* FLOW PILLS */
+.flow-pills { display: flex; gap: 4px; }
+.flow-pill {
+  width: 28px;
+  height: 18px;
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flow-pill.ok { background: var(--green-dim); color: var(--green); }
+.flow-pill.err { background: var(--red-dim); color: var(--red); }
+.flow-pill.pending { background: var(--yellow-dim); color: var(--yellow); }
+.flow-pill.skip { background: rgba(100,116,139,0.1); color: var(--muted); }
+
+/* ACTION BUTTONS */
+.actions { display: flex; gap: 4px; }
+.btn {
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--muted2);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--sans);
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.btn-green:hover { border-color: var(--green); color: var(--green); }
+.btn.btn-orange:hover { border-color: var(--orange); color: var(--orange); }
+.btn.btn-red:hover { border-color: var(--red); color: var(--red); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* MONO TEXT */
+.mono { font-family: var(--mono); }
+.text-muted { color: var(--muted2); }
+.text-small { font-size: 13px; }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 28px;
+  width: 500px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.modal-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+.modal-field { margin-bottom: 14px; }
+.modal-label { font-size: 13px; color: var(--muted); margin-bottom: 4px; font-family: var(--mono); }
+.modal-value {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: var(--mono);
+  color: var(--text);
+  word-break: break-all;
+}
+.modal-actions { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+.modal-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--sans);
+  text-align: center;
+}
+.modal-btn:hover { border-color: var(--accent); color: var(--accent); }
+.modal-btn.primary { background: var(--blue); border-color: var(--blue); color: white; }
+.modal-btn.primary:hover { background: var(--accent); border-color: var(--accent); }
+.modal-btn.danger { border-color: var(--red); color: var(--red); }
+.modal-btn.success { border-color: var(--green); color: var(--green); }
+.modal-btn.close-btn { flex: none; min-width: auto; padding: 10px 14px; }
+
+/* TOAST */
+.toast-wrap {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 300;
+}
+.toast {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 14px;
+  min-width: 260px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideIn 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.toast.success { border-color: var(--green); }
+.toast.error { border-color: var(--red); }
+.toast.info { border-color: var(--accent); }
+@keyframes slideIn {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* LOADING */
+.spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--muted);
+}
+.empty-icon { font-size: 32px; margin-bottom: 12px; }
+.empty-text { font-size: 15px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <img src="https://speedx.com.pl/wp-content/uploads/2026/02/SPEEDx-Logo-5-2.png" alt="SPEEDx" class="topbar-logo" onerror="this.style.display='none'">
+    <div class="topbar-divider"></div>
+    <div class="topbar-title">Ops Panel</div>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-time" id="clock">--:--:--</span>
+    <div class="status-dot" title="System online"></div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Navigation</div>
+      <button class="nav-item active" onclick="showView('submissions')">
+        <span class="nav-icon">📋</span> Submissions
+      </button>
+      <button class="nav-item" onclick="showView('clients')">
+        <span class="nav-icon">🏢</span> Clients
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Quick stats</div>
+      <div class="stats-mini" id="sidebar-stats">
+        <div class="stat-row">
+          <span class="stat-label">Total</span>
+          <span class="stat-val" id="stat-total">—</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Completed</span>
+          <span class="stat-val green" id="stat-ok">—</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Issues</span>
+          <span class="stat-val red" id="stat-err">—</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Pending</span>
+          <span class="stat-val orange" id="stat-pending">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Actions</div>
+      <button class="nav-item" onclick="loadData()">
+        <span class="nav-icon">🔄</span> Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- SUBMISSIONS VIEW -->
+    <div id="view-submissions">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Submissions</div>
+          <div class="section-sub">All RFQ submissions — restart flows or send results to client</div>
+        </div>
+        <button class="btn" onclick="loadData()" id="refresh-btn">↻ Refresh</button>
+      </div>
+
+      <div class="filters">
+        <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+        <button class="filter-btn" onclick="setFilter('error', this)">⚠ Issues</button>
+        <button class="filter-btn" onclick="setFilter('pending', this)">⏳ Pending</button>
+        <button class="filter-btn" onclick="setFilter('complete', this)">✅ Complete</button>
+        <input class="search-box" type="text" placeholder="Search by company, RFQ name, ID..." id="search-input" oninput="renderTable()">
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Submission ID</th>
+              <th>Company</th>
+              <th>RFQ Name</th>
+              <th>Date</th>
+              <th>Flows</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <tr><td colspan="7">
+              <div class="empty-state">
+                <div class="spinner" style="margin:0 auto 12px;width:24px;height:24px;border-width:3px;"></div>
+                <div class="empty-text">Loading data from Google Sheets...</div>
+              </div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CLIENTS VIEW -->
+    <div id="view-clients" style="display:none">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Clients</div>
+          <div class="section-sub">Registered companies and submission counts</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>VAT ID</th>
+              <th>Email</th>
+              <th>Submissions</th>
+              <th>Last activity</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="clients-body">
+            <tr><td colspan="6">
+              <div class="empty-state">
+                <div class="spinner" style="margin:0 auto 12px;width:24px;height:24px;border-width:3px;"></div>
+                <div class="empty-text">Loading...</div>
+              </div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Submission Details</div>
+    <div class="modal-sub" id="modal-sub">Review and restart flows</div>
+
+    <div id="modal-body"></div>
+
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div class="toast-wrap" id="toasts"></div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const SHEET_ID = '1nDjqXb50-5_TbezrDPjOw-Xu8xC-ghHV2oyeaWNTBfA';
+const SHEET_NAME = 'rfqs';
+const API_KEY = ''; // opcjonalnie - bez klucza używamy CORS proxy
+
+const WEBHOOKS = {
+  F4: 'https://speedx.app.n8n.cloud/webhook/start-rfq-analysis',
+  F5: 'https://speedx.app.n8n.cloud/webhook/start-a-level',
+  F7: 'https://speedx.app.n8n.cloud/webhook/start-geocoding'
+};
+
+const PREVIEW_EMAIL = 'info@speedx.com.pl';
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let allRows = [];
+let currentFilter = 'all';
+
+// ─── CLOCK ────────────────────────────────────────────────────────────────────
+setInterval(() => {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString('pl-PL');
+}, 1000);
+
+// ─── LOAD DATA ────────────────────────────────────────────────────────────────
+async function loadData() {
+  document.getElementById('refresh-btn').innerHTML = '<span class="spinner"></span>';
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&headers=1`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+
+    const cols = json.table.cols.map(c => c.label);
+    allRows = json.table.rows.map(row => {
+      const obj = {};
+      cols.forEach((col, i) => {
+        const cell = row.c[i];
+        obj[col] = cell ? (cell.v !== null ? cell.v : '') : '';
+      });
+      return obj;
+    }).filter(r => r.submission_id);
+
+    renderTable();
+    renderClients();
+    updateStats();
+  } catch(e) {
+    toast('Failed to load data: ' + e.message, 'error');
+    document.getElementById('table-body').innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load Google Sheets data.<br>Make sure the sheet is publicly readable.</div></div></td></tr>`;
+  }
+  document.getElementById('refresh-btn').innerHTML = '↻ Refresh';
+}
+
+// ─── STATUS LOGIC ─────────────────────────────────────────────────────────────
+function getRowStatus(row) {
+  const f4 = row.status || '';
+  const reported = row['reported_at'] || '';
+  const b1 = row['01_rep_file_id'] || '';
+  const errCode = row['error_code'] || '';
+
+  if (errCode) return 'error';
+  if (reported) return 'complete';
+  if (b1) return 'pending'; // F4 done, F5 not yet
+  if (f4 === 'approved') return 'pending';
+  return 'pending';
+}
+
+function getFlowStatus(row) {
+  const hasF4 = !!(row['01_rep_file_id'] || row['02_rep_file_id'] || row['03_rep_file_id']);
+  const hasF5 = !!(row['reported_at'] || row['A_level_rep_id']);
+  const hasF7 = !!(row['lan_file_id']);
+  const hasErr = !!(row['error_code']);
+
+  return {
+    F4: hasErr ? 'err' : hasF4 ? 'ok' : 'pending',
+    F5: hasF5 ? 'ok' : hasF4 ? 'pending' : 'skip',
+    F7: hasF7 ? 'ok' : 'skip'
+  };
+}
+
+// ─── RENDER TABLE ─────────────────────────────────────────────────────────────
+function renderTable() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  let rows = allRows.filter(r => {
+    const status = getRowStatus(r);
+    if (currentFilter !== 'all' && status !== currentFilter) return false;
+    if (search) {
+      const hay = [r.submission_id, r.clean_organizer_name, r.rfq_name_clean, r.rfq_name].join(' ').toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  rows.sort((a, b) => {
+    const da = new Date(a.created_at || 0);
+    const db = new Date(b.created_at || 0);
+    return db - da;
+  });
+
+  if (!rows.length) {
+    document.getElementById('table-body').innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No submissions found</div></div></td></tr>`;
+    return;
+  }
+
+  const html = rows.map(row => {
+    const status = getRowStatus(row);
+    const flows = getFlowStatus(row);
+    const company = row.clean_organizer_name || row.organizer_name || row.clean_company_name || '—';
+    const rfqName = row.rfq_name_clean || row.rfq_name_raw || '—';
+    const sid = row.submission_id || '—';
+    const date = row.created_at ? new Date(row.created_at).toLocaleDateString('pl-PL') : (row.rfq_date ? new Date(row.rfq_date).toLocaleDateString('pl-PL') : '—');
+
+    const statusBadge = {
+      complete: '<span class="badge badge-green">✓ complete</span>',
+      error: '<span class="badge badge-red">✗ error</span>',
+      pending: '<span class="badge badge-yellow">⏳ pending</span>',
+    }[status] || '<span class="badge badge-gray">unknown</span>';
+
+    const flowPills = ['F4','F5','F7'].map(f => {
+      const s = flows[f];
+      return `<div class="flow-pill ${s}" title="${f}: ${s}">${f}</div>`;
+    }).join('');
+
+    return `<tr>
+      <td><span class="mono text-small" style="color:var(--accent)">${sid}</span></td>
+      <td><span style="font-weight:500">${company}</span></td>
+      <td><span class="text-muted">${rfqName}</span></td>
+      <td><span class="text-small text-muted">${date}</span></td>
+      <td><div class="flow-pills">${flowPills}</div></td>
+      <td>${statusBadge}</td>
+      <td>
+        <div class="actions">
+          <button class="btn" onclick="openModal('${sid}')" title="Details & Actions">⚙ Manage</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('table-body').innerHTML = html;
+}
+
+// ─── RENDER CLIENTS ───────────────────────────────────────────────────────────
+function renderClients() {
+  const companies = {};
+  allRows.forEach(r => {
+    const vat = r.clean_organizer_vat_id || r.organizer_vat_id || 'unknown';
+    if (!companies[vat]) {
+      companies[vat] = {
+        name: r.clean_organizer_name || r.organizer_name || '—',
+        vat,
+        email: r.rfq_user_name || '—',
+        count: 0,
+        lastDate: null,
+        status: r.status || '—'
+      };
+    }
+    companies[vat].count++;
+    const d = new Date(r.created_at || 0);
+    if (!companies[vat].lastDate || d > companies[vat].lastDate) {
+      companies[vat].lastDate = d;
+      companies[vat].status = r.status || '—';
+    }
+  });
+
+  const rows = Object.values(companies).sort((a,b) => (b.lastDate||0) - (a.lastDate||0));
+
+  if (!rows.length) {
+    document.getElementById('clients-body').innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">🏢</div><div class="empty-text">No clients found</div></div></td></tr>`;
+    return;
+  }
+
+  document.getElementById('clients-body').innerHTML = rows.map(c => `
+    <tr>
+      <td><span style="font-weight:500">${c.name}</span></td>
+      <td><span class="mono text-small">${c.vat}</span></td>
+      <td><span class="text-small text-muted">${c.email}</span></td>
+      <td><span class="badge badge-blue">${c.count} RFQ${c.count !== 1 ? 's' : ''}</span></td>
+      <td><span class="text-small text-muted">${c.lastDate ? c.lastDate.toLocaleDateString('pl-PL') : '—'}</span></td>
+      <td><span class="badge badge-gray">${c.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+// ─── STATS ────────────────────────────────────────────────────────────────────
+function updateStats() {
+  const statuses = allRows.map(getRowStatus);
+  document.getElementById('stat-total').textContent = allRows.length;
+  document.getElementById('stat-ok').textContent = statuses.filter(s => s === 'complete').length;
+  document.getElementById('stat-err').textContent = statuses.filter(s => s === 'error').length;
+  document.getElementById('stat-pending').textContent = statuses.filter(s => s === 'pending').length;
+}
+
+// ─── FILTER ───────────────────────────────────────────────────────────────────
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+// ─── MODAL ────────────────────────────────────────────────────────────────────
+function openModal(sid) {
+  const row = allRows.find(r => r.submission_id === sid);
+  if (!row) return;
+
+  const flows = getFlowStatus(row);
+  const status = getRowStatus(row);
+
+  document.getElementById('modal-title').textContent = row.rfq_name_clean || row.rfq_name || sid;
+  document.getElementById('modal-sub').textContent = (row.clean_organizer_name || '—') + ' · ' + sid;
+
+  const fields = [
+    ['Submission ID', row.submission_id],
+    ['Company', row.clean_organizer_name || row.organizer_name || '—'],
+    ['VAT ID', row.clean_organizer_vat_id || row.organizer_vat_id || '—'],
+    ['RFQ Name', row.rfq_name_clean || row.rfq_name || '—'],
+    ['Status', row.status || '—'],
+    ['Created', row.created_at ? new Date(row.created_at).toLocaleString('pl-PL') : (row.rfq_date || '—')],
+    ['Email', row.clean_user_email || row.rfq_user_name || '—'],
+    ['Error', row.error_code ? `${row.error_code}: ${row.error_message}` : 'None'],
+    ['F4 Reports', [row['01_rep_file_id'] ? '01✓' : '01✗', row['02_rep_file_id'] ? '02✓' : '02✗', row['03_rep_file_id'] ? '03✓' : '03✗'].join(' ')],
+    ['Reported at', row.reported_at || 'Not yet sent'],
+  ];
+
+  document.getElementById('modal-body').innerHTML = fields.map(([label, val]) => `
+    <div class="modal-field">
+      <div class="modal-label">${label}</div>
+      <div class="modal-value">${val}</div>
+    </div>
+  `).join('');
+
+  const actions = `
+    <button class="modal-btn" onclick="restartFlow('F4', '${sid}')" title="Re-run document analysis">
+      🔄 Restart F4 (Analysis)
+    </button>
+    <button class="modal-btn" onclick="restartFlow('F5', '${sid}')" title="Re-run C-Level report">
+      🔄 Restart F5 (C-Level)
+    </button>
+    <button class="modal-btn" onclick="restartFlow('F7', '${sid}')" title="Re-run geocoding">
+      🔄 Restart F7 (Geocoding)
+    </button>
+    <button class="modal-btn success" onclick="sendToClient('${sid}')" title="Send results to client email">
+      ✉ Send to client
+    </button>
+    <button class="modal-btn close-btn" onclick="closeModal()">✕ Close</button>
+  `;
+  document.getElementById('modal-actions').innerHTML = actions;
+
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+// ─── RESTART FLOW ─────────────────────────────────────────────────────────────
+async function restartFlow(flow, sid) {
+  const row = allRows.find(r => r.submission_id === sid);
+  if (!row) return;
+
+  if (!confirm(`Restart ${flow} for submission ${sid}?\n\nThis will re-run the flow and send preview results to ${PREVIEW_EMAIL}.`)) return;
+
+  toast(`Starting ${flow} for ${sid}...`, 'info');
+
+  try {
+    const body = buildWebhookBody(flow, row);
+    const res = await fetch(WEBHOOKS[flow], {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      toast(`✓ ${flow} started successfully for ${sid}`, 'success');
+    } else {
+      toast(`✗ ${flow} returned ${res.status}`, 'error');
+    }
+  } catch(e) {
+    toast(`✗ Failed to start ${flow}: ${e.message}`, 'error');
+  }
+}
+
+function buildWebhookBody(flow, row) {
+  const base = {
+    submission_id: row.submission_id,
+    rfq_name: row.rfq_name_clean || row.rfq_name,
+    rfq_folder_id: row.rfq_folder_id,
+    '00rep_folder_id': row['00rep_folder_id'] || row.rep_folder_id,
+    clean_organizer_name: row.clean_organizer_name,
+    clean_organizer_vat_id: row.clean_organizer_vat_id,
+    clean_user_name: row.clean_user_name || row.rfq_user_name,
+    clean_user_email: row.clean_user_email || row.rfq_user_name,
+    preview_mode: true,
+    preview_email: PREVIEW_EMAIL
+  };
+
+  if (flow === 'F7') {
+    return { ...base, lan_file_id: row.lan_file_id };
+  }
+
+  // F4 / F5
+  for (let i = 1; i <= 10; i++) {
+    const slot = String(i).padStart(2, '0');
+    base[`${slot}_rep_file_id`] = row[`${slot}_rep_file_id`] || '';
+    base[`${slot}_bullet_summary`] = row[`${slot}_bullet_summary`] || '';
+    base[`${slot}_extracted_text`] = row[`${slot}_extracted_text`] || '';
+    base[`${slot}_source_file_name`] = row[`${slot}_source_file_name`] || '';
+  }
+
+  return base;
+}
+
+// ─── SEND TO CLIENT ───────────────────────────────────────────────────────────
+async function sendToClient(sid) {
+  const row = allRows.find(r => r.submission_id === sid);
+  if (!row) return;
+
+  const clientEmail = row.clean_user_email || row.rfq_user_name || '?';
+  if (!confirm(`Send final results to CLIENT: ${clientEmail}\n\nThis will trigger F5 WITHOUT preview mode and deliver the report directly to the client.`)) return;
+
+  toast(`Sending to client ${clientEmail}...`, 'info');
+
+  try {
+    const body = buildWebhookBody('F5', row);
+    body.preview_mode = false;
+    body.email_to = clientEmail;
+
+    const res = await fetch(WEBHOOKS.F5, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      toast(`✓ Report sent to ${clientEmail}`, 'success');
+    } else {
+      toast(`✗ Send failed: ${res.status}`, 'error');
+    }
+  } catch(e) {
+    toast(`✗ Error: ${e.message}`, 'error');
+  }
+}
+
+// ─── VIEW SWITCH ──────────────────────────────────────────────────────────────
+function showView(view) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('view-submissions').style.display = view === 'submissions' ? '' : 'none';
+  document.getElementById('view-clients').style.display = view === 'clients' ? '' : 'none';
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function toast(msg, type = 'info') {
+  const icons = { success: '✓', error: '✗', info: 'ℹ' };
+  const colors = { success: 'var(--green)', error: 'var(--red)', info: 'var(--accent)' };
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span style="color:${colors[type]};font-size:16px">${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+loadData();
+setInterval(loadData, 60000); // auto-refresh every 60s
+</script>
+</body>
+</html>
