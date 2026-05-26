@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPEEDx — My Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0c2340; --blue: #185fa5; --accent: #3b82f6;
+  --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b; --muted2: #94a3b8;
+  --green: #16a34a; --green-dim: #dcfce7; --orange: #f97316;
+  --orange-dim: #fff7ed; --red: #dc2626; --red-dim: #fee2e2;
+  --yellow: #ca8a04; --yellow-dim: #fef9c3;
+  --mono: 'JetBrains Mono', monospace; --sans: 'DM Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.header { background: var(--navy); padding: 16px 28px; display: flex; justify-content: space-between; align-items: center; }
+.header-logo { height: 28px; }
+.header-right { font-size: 12px; color: #94a3b8; text-align: right; line-height: 1.8; }
+.header-right strong { color: #e2e8f0; font-size: 13px; }
+.container { max-width: 900px; margin: 0 auto; padding: 28px 20px; }
+.welcome { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--blue); border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; }
+.welcome-name { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.welcome-sub { font-size: 13px; color: var(--muted); }
+.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+@media(max-width:600px) { .kpi-grid { grid-template-columns: 1fr; } }
+.kpi-card { background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--blue); border-radius: 8px; padding: 16px; }
+.kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 6px; }
+.kpi-val { font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1; }
+.kpi-val.green { color: var(--green); }
+.kpi-val.red { color: var(--red); }
+.kpi-val.yellow { color: var(--yellow); }
+.kpi-sub { font-size: 11px; color: var(--muted2); margin-top: 4px; }
+.actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+@media(max-width:600px) { .actions-grid { grid-template-columns: 1fr; } }
+.action-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.action-title { font-size: 13px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.action-desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
+.action-btn { display: block; width: 100%; text-align: center; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; border: none; transition: all 0.15s; }
+.action-btn.blue { background: var(--blue); color: white; }
+.action-btn.blue:hover { background: #1d4ed8; }
+.action-btn.navy { background: var(--navy); color: white; }
+.action-btn.navy:hover { background: #0f2d52; }
+.section-title { font-size: 13px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.table-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 24px; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: #f8fafc; border-bottom: 1px solid var(--border); }
+th { padding: 9px 14px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); font-weight: 600; }
+tbody tr { border-bottom: 1px solid var(--border); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #f8faff; }
+td { padding: 10px 14px; font-size: 13px; }
+.badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.badge-green { background: var(--green-dim); color: var(--green); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); }
+.badge-red { background: var(--red-dim); color: var(--red); }
+.badge-blue { background: #eff6ff; color: var(--blue); }
+.badge-gray { background: #f1f5f9; color: var(--muted); }
+.empty { text-align: center; padding: 32px; color: var(--muted); font-size: 13px; }
+.loading { text-align: center; padding: 40px; color: var(--muted); }
+.spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-box { background: var(--red-dim); border: 1px solid #fca5a5; border-radius: 8px; padding: 20px; text-align: center; color: var(--red); margin: 20px 0; }
+.footer { background: var(--navy); color: #475569; font-size: 11px; padding: 14px 28px; display: flex; justify-content: space-between; margin-top: 40px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="https://speedx.com.pl/wp-content/uploads/2026/02/SPEEDx-Logo-5-2.png" alt="SPEEDx" class="header-logo" onerror="this.style.display='none'">
+  <div class="header-right">
+    <strong id="hdr-company">Loading...</strong><br>
+    <span id="hdr-date"></span>
+  </div>
+</div>
+
+<div class="container" id="main-content">
+  <div class="loading">
+    <div class="spinner"></div>
+    Loading your dashboard...
+  </div>
+</div>
+
+<div class="footer">
+  <span>SPEEDx Procurement Intelligence · Confidential</span>
+  <span>speedx.com.pl · APPGRADE Sp. z o.o.</span>
+</div>
+
+<script>
+const SHEET_ID = '1nDjqXb50-5_TbezrDPjOw-Xu8xC-ghHV2oyeaWNTBfA';
+
+// Czytamy token z URL: ?token=XXX
+function getToken() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('token') || '';
+}
+
+function formatDate(val) {
+  if (!val) return '—';
+  const s = String(val);
+  const m = s.match(/^Date\((\d+),(\d+),(\d+)/);
+  if (m) {
+    const d = new Date(parseInt(m[1]), parseInt(m[2]), parseInt(m[3]));
+    return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  }
+  const d = new Date(s.replace(' ','T'));
+  return isNaN(d) ? '—' : d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+async function fetchSheet(sheetName) {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&headers=1`;
+  const res = await fetch(url);
+  const text = await res.text();
+  const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+  const cols = json.table.cols.map(c => c.label);
+  return json.table.rows.map(row => {
+    const obj = {};
+    cols.forEach((col, i) => { const cell = row.c[i]; obj[col] = cell ? (cell.v !== null ? cell.v : '') : ''; });
+    return obj;
+  });
+}
+
+function creditsBadge(n) {
+  n = Number(n) || 0;
+  if (n > 10000) return `<span class="kpi-val green">${n.toLocaleString()}</span>`;
+  if (n > 3000)  return `<span class="kpi-val yellow">${n.toLocaleString()}</span>`;
+  return `<span class="kpi-val red">${n.toLocaleString()}</span>`;
+}
+
+function statusBadge(status) {
+  const s = (status || '').toLowerCase();
+  if (s.includes('completed')) return `<span class="badge badge-green">✓ Completed</span>`;
+  if (s.includes('confirmed')) return `<span class="badge badge-blue">⚡ In progress</span>`;
+  if (s.includes('pending')) return `<span class="badge badge-yellow">⏳ Pending</span>`;
+  return `<span class="badge badge-gray">${status || '—'}</span>`;
+}
+
+async function init() {
+  const token = getToken();
+  const container = document.getElementById('main-content');
+
+  if (!token) {
+    container.innerHTML = `<div class="error-box"><strong>Access denied</strong><br>No token provided. Please use the link from your approval email.</div>`;
+    return;
+  }
+
+  try {
+    // 1. Znajdź firmę po tokenie
+    const companies = await fetchSheet('companies');
+    const company = companies.find(c => c.approval_token === token);
+
+    if (!company) {
+      container.innerHTML = `<div class="error-box"><strong>Company not found</strong><br>Invalid or expired token. Please contact <a href="mailto:info@speedx.com.pl">info@speedx.com.pl</a></div>`;
+      return;
+    }
+
+    // 2. Nagłówek
+    document.getElementById('hdr-company').textContent = company.clean_company_name || '—';
+    document.getElementById('hdr-date').textContent = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
+
+    // 3. RFQs tej firmy
+    const rfqs = await fetchSheet('rfqs');
+    const myRfqs = rfqs.filter(r => r.company_id === company.company_id).sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+
+    // 4. GEO requests tej firmy
+    const geoRows = await fetchSheet('geo_requests');
+    const myGeos = geoRows.filter(r => r.company_id === company.company_id).sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+
+    const credits = Number(company.credits_balance) || 0;
+
+    // 5. Buduj URL dla formularzy
+    const rfqParams = new URLSearchParams({
+      user_email: company.clean_user_email || '',
+      clean_vat_id: company.clean_vat_id || '',
+      clean_company_name: company.clean_company_name || '',
+      clean_user_name: company.clean_user_name || '',
+      tendering_folder_id: company.tendering_folder_id || '',
+      company_id: company.company_id || '',
+      lan_file_id: company.lan_file_id || ''
+    });
+    const geoParams = new URLSearchParams({
+      user_email: company.clean_user_email || '',
+      clean_vat_id: company.clean_vat_id || '',
+      clean_company_name: company.clean_company_name || '',
+      clean_user_name: company.clean_user_name || '',
+      company_id: company.company_id || '',
+      geo_folder_id: company.geo_folder_id || ''
+    });
+
+    const rfqUrl = `https://speedx.com.pl/ftl_rfq/?${rfqParams}`;
+    const geoUrl = `https://speedx.com.pl/ftl_geo/?${geoParams}`;
+
+    // 6. Render
+    container.innerHTML = `
+      <div class="welcome">
+        <div class="welcome-name">Welcome back, ${company.clean_user_name || 'Client'} 👋</div>
+        <div class="welcome-sub">${company.clean_company_name} · ${company.company_id}</div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Credits Balance</div>
+          ${creditsBadge(credits)}
+          <div class="kpi-sub">1 credit = 1 lane geocoded<br>5,000 credits = 1 RFQ analysis</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">RFQ Submissions</div>
+          <div class="kpi-val">${myRfqs.length}</div>
+          <div class="kpi-sub">${myRfqs.filter(r => (r.status||'').toLowerCase().includes('completed')).length} completed</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">GEO Requests</div>
+          <div class="kpi-val">${myGeos.length}</div>
+          <div class="kpi-sub">${myGeos.filter(r => (r.status||'').toLowerCase().includes('completed')).length} completed</div>
+        </div>
+      </div>
+
+      <div class="actions-grid">
+        <div class="action-card">
+          <div class="action-title">📋 RFQ Analysis</div>
+          <div class="action-desc">Submit tender documents for full AI-powered analysis. Receive a C-Level Executive Summary within minutes.</div>
+          <a href="${rfqUrl}" class="action-btn blue" target="_blank">Submit new RFQ →</a>
+        </div>
+        <div class="action-card">
+          <div class="action-title">📍 GEO Distance Calculation</div>
+          <div class="action-desc">Upload your transport lane file and get driving distances and geocoded coordinates for all routes.</div>
+          <a href="${geoUrl}" class="action-btn navy" target="_blank">Submit GEO request →</a>
+        </div>
+      </div>
+
+      <div class="section-title">📋 RFQ History</div>
+      <div class="table-card">
+        ${myRfqs.length === 0 ? '<div class="empty">No RFQ submissions yet</div>' : `
+        <table>
+          <thead><tr><th>RFQ Name</th><th>Submitted</th><th>Lanes</th><th>Status</th></tr></thead>
+          <tbody>
+            ${myRfqs.map(r => `<tr>
+              <td><strong>${r.rfq_name_clean || r.rfq_name_raw || '—'}</strong><br><span style="font-size:11px;color:var(--muted);font-family:var(--mono);">${r.submission_id}</span></td>
+              <td>${formatDate(r.created_at)}</td>
+              <td>${r.lane_selected_total ? `${Number(r.lane_selected_total).toLocaleString()} lanes` : '—'}</td>
+              <td>${statusBadge(r.status)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>`}
+      </div>
+
+      <div class="section-title">📍 GEO History</div>
+      <div class="table-card">
+        ${myGeos.length === 0 ? '<div class="empty">No GEO requests yet</div>' : `
+        <table>
+          <thead><tr><th>GEO Name</th><th>Submitted</th><th>Lanes</th><th>Status</th></tr></thead>
+          <tbody>
+            ${myGeos.map(r => `<tr>
+              <td><strong>${r.rfq_name_clean || '—'}</strong><br><span style="font-size:11px;color:var(--muted);font-family:var(--mono);">${r.submission_id}</span></td>
+              <td>${formatDate(r.created_at)}</td>
+              <td>${r.lane_selected_total ? `${Number(r.lane_selected_total).toLocaleString()} lanes` : '—'}</td>
+              <td>${statusBadge(r.status)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>`}
+      </div>
+
+      <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-size:12px;color:var(--muted);">
+        Need more credits or have questions? Contact us at <a href="mailto:info@speedx.com.pl" style="color:var(--blue);">info@speedx.com.pl</a>
+      </div>
+    `;
+
+  } catch(e) {
+    container.innerHTML = `<div class="error-box"><strong>Error loading dashboard</strong><br>${e.message}</div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
