@@ -551,14 +551,15 @@ function openClientModal(companyId) {
   document.getElementById('client-modal-title').textContent = c.clean_company_name || companyId;
   document.getElementById('client-modal-sub').textContent = c.company_id + ' · ' + (c.clean_user_email || '');
 
-  document.getElementById('client-modal-actions-top').innerHTML = `
-    <div style="display:flex;gap:8px;align-items:center;width:100%;">
-      <span style="font-size:13px;color:var(--muted);white-space:nowrap;">💳 Add credits:</span>
-      <input type="number" id="client-credits-input" placeholder="e.g. 10000" min="1"
-        style="flex:1;padding:8px 10px;border-radius:4px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:14px;font-family:var(--sans);outline:none;">
-      <button class="modal-btn" style="flex:none;border-color:var(--accent);color:var(--accent);" onclick="addCreditsClient('${companyId}')">+ Add</button>
-    </div>
-  `;
+document.getElementById('client-modal-actions-top').innerHTML = `
+  <div style="display:flex;gap:8px;align-items:center;width:100%;flex-wrap:wrap;">
+    <a href="https://speedx.com.pl/dashboard/?token=${c.approval_token}" target="_blank" class="modal-btn" style="flex:none;border-color:var(--green);color:var(--green);">👁 View Dashboard</a>
+    <span style="font-size:13px;color:var(--muted);white-space:nowrap;">💳 Add credits:</span>
+    <input type="number" id="client-credits-input" placeholder="e.g. 10000" min="1"
+      style="flex:1;min-width:80px;padding:8px 10px;border-radius:4px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:14px;font-family:var(--sans);outline:none;">
+    <button class="modal-btn" style="flex:none;border-color:var(--accent);color:var(--accent);" onclick="addCreditsClient('${companyId}')">+ Add</button>
+  </div>
+`;
 
   const credits = Number(c.credits_balance) || 0;
   const fields = [
