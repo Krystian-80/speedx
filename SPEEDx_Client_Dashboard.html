@@ -10,9 +10,9 @@
   --navy: #0c2340; --blue: #185fa5; --accent: #3b82f6;
   --bg: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
   --text: #1e293b; --muted: #64748b; --muted2: #94a3b8;
-  --green: #16a34a; --green-dim: #dcfce7; --orange: #f97316;
-  --orange-dim: #fff7ed; --red: #dc2626; --red-dim: #fee2e2;
+  --green: #16a34a; --green-dim: #dcfce7;
   --yellow: #ca8a04; --yellow-dim: #fef9c3;
+  --red: #dc2626; --red-dim: #fee2e2;
   --mono: 'JetBrains Mono', monospace; --sans: 'DM Sans', sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,12 +21,12 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
 .header-logo { height: 28px; }
 .header-right { font-size: 12px; color: #94a3b8; text-align: right; line-height: 1.8; }
 .header-right strong { color: #e2e8f0; font-size: 13px; }
-.container { max-width: 900px; margin: 0 auto; padding: 28px 20px; }
+.container { max-width: 960px; margin: 0 auto; padding: 28px 20px; }
 .welcome { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--blue); border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; }
 .welcome-name { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
 .welcome-sub { font-size: 13px; color: var(--muted); }
-.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
-@media(max-width:600px) { .kpi-grid { grid-template-columns: 1fr; } }
+.kpi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 24px; }
+@media(max-width:600px){ .kpi-grid,.actions-grid { grid-template-columns:1fr; } }
 .kpi-card { background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--blue); border-radius: 8px; padding: 16px; }
 .kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 6px; }
 .kpi-val { font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1; }
@@ -35,7 +35,6 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
 .kpi-val.yellow { color: var(--yellow); }
 .kpi-sub { font-size: 11px; color: var(--muted2); margin-top: 4px; }
 .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
-@media(max-width:600px) { .actions-grid { grid-template-columns: 1fr; } }
 .action-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
 .action-title { font-size: 13px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
 .action-desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
@@ -44,26 +43,46 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
 .action-btn.blue:hover { background: #1d4ed8; }
 .action-btn.navy { background: var(--navy); color: white; }
 .action-btn.navy:hover { background: #0f2d52; }
-.section-title { font-size: 13px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.section-title { font-size: 13px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
 .table-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 24px; }
 table { width: 100%; border-collapse: collapse; }
 thead tr { background: #f8fafc; border-bottom: 1px solid var(--border); }
-th { padding: 9px 14px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); font-weight: 600; }
+th { padding: 9px 14px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); font-weight: 600; white-space: nowrap; }
 tbody tr { border-bottom: 1px solid var(--border); }
 tbody tr:last-child { border-bottom: none; }
 tbody tr:hover { background: #f8faff; }
-td { padding: 10px 14px; font-size: 13px; }
+td { padding: 10px 14px; font-size: 13px; vertical-align: middle; }
 .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; white-space: nowrap; }
 .badge-green { background: var(--green-dim); color: var(--green); }
 .badge-yellow { background: var(--yellow-dim); color: var(--yellow); }
 .badge-red { background: var(--red-dim); color: var(--red); }
 .badge-blue { background: #eff6ff; color: var(--blue); }
 .badge-gray { background: #f1f5f9; color: var(--muted); }
+.dl-btn { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid var(--border); background: #f8fafc; color: var(--navy); transition: all 0.15s; white-space: nowrap; }
+.dl-btn:hover { border-color: var(--blue); color: var(--blue); background: #eff6ff; }
+.dl-btn.primary { background: var(--navy); color: white; border-color: var(--navy); }
+.dl-btn.primary:hover { background: var(--blue); border-color: var(--blue); }
+.reports-btn { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; border: 1px solid var(--border); background: #f8fafc; color: var(--muted); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.reports-btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
 .empty { text-align: center; padding: 32px; color: var(--muted); font-size: 13px; }
 .loading { text-align: center; padding: 40px; color: var(--muted); }
 .spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .error-box { background: var(--red-dim); border: 1px solid #fca5a5; border-radius: 8px; padding: 20px; text-align: center; color: var(--red); margin: 20px 0; }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: white; border-radius: 10px; padding: 28px; width: 520px; max-width: 95vw; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+.modal-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.report-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+.report-item:last-child { border-bottom: none; }
+.report-slot-badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 20px; background: #0c2340; color: white; border-radius: 3px; font-family: var(--mono); font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.report-info { flex: 1; min-width: 0; }
+.report-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.report-source { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.modal-close { display: block; width: 100%; margin-top: 20px; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: #f8fafc; color: var(--muted); font-size: 14px; font-weight: 500; cursor: pointer; }
+.modal-close:hover { border-color: var(--navy); color: var(--navy); }
 .footer { background: var(--navy); color: #475569; font-size: 11px; padding: 14px 28px; display: flex; justify-content: space-between; margin-top: 40px; }
 </style>
 </head>
@@ -78,9 +97,15 @@ td { padding: 10px 14px; font-size: 13px; }
 </div>
 
 <div class="container" id="main-content">
-  <div class="loading">
-    <div class="spinner"></div>
-    Loading your dashboard...
+  <div class="loading"><div class="spinner"></div>Loading your dashboard...</div>
+</div>
+
+<div class="modal-overlay" id="reports-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-rfq-name">B-Level Reports</div>
+    <div class="modal-sub" id="modal-rfq-sub">Individual document analysis reports</div>
+    <div id="modal-reports-list"></div>
+    <button class="modal-close" onclick="closeReportsModal()">✕ Close</button>
   </div>
 </div>
 
@@ -92,22 +117,17 @@ td { padding: 10px 14px; font-size: 13px; }
 <script>
 const SHEET_ID = '1nDjqXb50-5_TbezrDPjOw-Xu8xC-ghHV2oyeaWNTBfA';
 
-// Czytamy token z URL: ?token=XXX
 function getToken() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('token') || '';
+  return new URLSearchParams(window.location.search).get('token') || '';
 }
 
 function formatDate(val) {
   if (!val) return '—';
   const s = String(val);
   const m = s.match(/^Date\((\d+),(\d+),(\d+)/);
-  if (m) {
-    const d = new Date(parseInt(m[1]), parseInt(m[2]), parseInt(m[3]));
-    return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
-  }
+  if (m) return new Date(parseInt(m[1]), parseInt(m[2]), parseInt(m[3])).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
   const d = new Date(s.replace(' ','T'));
-  return isNaN(d) ? '—' : d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  return isNaN(d) ? '—' : d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
 }
 
 async function fetchSheet(sheetName) {
@@ -118,7 +138,7 @@ async function fetchSheet(sheetName) {
   const cols = json.table.cols.map(c => c.label);
   return json.table.rows.map(row => {
     const obj = {};
-    cols.forEach((col, i) => { const cell = row.c[i]; obj[col] = cell ? (cell.v !== null ? cell.v : '') : ''; });
+    cols.forEach((col,i) => { const cell = row.c[i]; obj[col] = cell ? (cell.v !== null ? cell.v : '') : ''; });
     return obj;
   });
 }
@@ -131,12 +151,66 @@ function creditsBadge(n) {
 }
 
 function statusBadge(status) {
-  const s = (status || '').toLowerCase();
+  const s = (status||'').toLowerCase();
   if (s.includes('completed')) return `<span class="badge badge-green">✓ Completed</span>`;
   if (s.includes('confirmed')) return `<span class="badge badge-blue">⚡ In progress</span>`;
-  if (s.includes('pending')) return `<span class="badge badge-yellow">⏳ Pending</span>`;
-  return `<span class="badge badge-gray">${status || '—'}</span>`;
+  if (s.includes('pending'))   return `<span class="badge badge-yellow">⏳ Pending</span>`;
+  return `<span class="badge badge-gray">${status||'—'}</span>`;
 }
+
+function openReportsModal(sid) {
+  const row = window._myRfqs.find(r => r.submission_id === sid);
+  if (!row) return;
+
+  document.getElementById('modal-rfq-name').textContent = row.rfq_name_clean || row.rfq_name_raw || sid;
+  document.getElementById('modal-rfq-sub').textContent = 'B-Level document analysis reports · ' + formatDate(row.created_at);
+
+  const slots = ['01','02','03','05','06','07','08','09','10'];
+  const items = [];
+
+  for (const slot of slots) {
+    const fileId = row[`${slot}_rep_file_id`];
+    if (!fileId) continue;
+
+    // Nazwa pliku źródłowego — jeśli jest w Sheets
+    const sourceName = row[`${slot}_source_file_name`] || '';
+    // Fallback label
+    const fallbackLabels = {
+      '01':'RFQ — Request for Quotation',
+      '02':'SOP — Standard Operating Procedure',
+      '03':'TSC — Transport Service Contract',
+      '05':'HST — Historical Shipment Data',
+      '06':'Annex 1','07':'Annex 2','08':'Annex 3',
+      '09':'Annex 4','10':'Annex 5'
+    };
+    const displayName = sourceName || fallbackLabels[slot] || `Document ${slot}`;
+    const dlUrl = `https://drive.google.com/uc?id=${fileId}&export=download`;
+
+    items.push(`
+      <div class="report-item">
+        <span class="report-slot-badge">${slot}</span>
+        <div class="report-info">
+          <div class="report-name">${displayName}</div>
+          ${sourceName ? `<div class="report-source">B-Level Analysis Report</div>` : ''}
+        </div>
+        <a href="${dlUrl}" target="_blank" class="dl-btn">⬇ Download</a>
+      </div>
+    `);
+  }
+
+  document.getElementById('modal-reports-list').innerHTML = items.length
+    ? items.join('')
+    : '<div class="empty">No B-Level reports available yet</div>';
+
+  document.getElementById('reports-modal').classList.add('open');
+}
+
+function closeReportsModal() {
+  document.getElementById('reports-modal').classList.remove('open');
+}
+document.getElementById('reports-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('reports-modal')) closeReportsModal();
+});
 
 async function init() {
   const token = getToken();
@@ -148,7 +222,6 @@ async function init() {
   }
 
   try {
-    // 1. Znajdź firmę po tokenie
     const companies = await fetchSheet('companies');
     const company = companies.find(c => c.approval_token === token);
 
@@ -157,43 +230,30 @@ async function init() {
       return;
     }
 
-    // 2. Nagłówek
     document.getElementById('hdr-company').textContent = company.clean_company_name || '—';
-    document.getElementById('hdr-date').textContent = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
+    document.getElementById('hdr-date').textContent = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
 
-    // 3. RFQs tej firmy
     const rfqs = await fetchSheet('rfqs');
     const myRfqs = rfqs.filter(r => r.company_id === company.company_id).sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+    window._myRfqs = myRfqs;
 
-    // 4. GEO requests tej firmy
     const geoRows = await fetchSheet('geo_requests');
     const myGeos = geoRows.filter(r => r.company_id === company.company_id).sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
 
     const credits = Number(company.credits_balance) || 0;
 
-    // 5. Buduj URL dla formularzy
     const rfqParams = new URLSearchParams({
-      user_email: company.clean_user_email || '',
-      clean_vat_id: company.clean_vat_id || '',
-      clean_company_name: company.clean_company_name || '',
-      clean_user_name: company.clean_user_name || '',
-      tendering_folder_id: company.tendering_folder_id || '',
-      company_id: company.company_id || '',
-      lan_file_id: company.lan_file_id || ''
+      user_email: company.clean_user_email||'', clean_vat_id: company.clean_vat_id||'',
+      clean_company_name: company.clean_company_name||'', clean_user_name: company.clean_user_name||'',
+      tendering_folder_id: company.tendering_folder_id||'', company_id: company.company_id||'',
+      lan_file_id: company.lan_file_id||''
     });
     const geoParams = new URLSearchParams({
-      user_email: company.clean_user_email || '',
-      clean_vat_id: company.clean_vat_id || '',
-      clean_company_name: company.clean_company_name || '',
-      clean_user_name: company.clean_user_name || '',
-      company_id: company.company_id || '',
-      geo_folder_id: company.geo_folder_id || ''
+      user_email: company.clean_user_email||'', clean_vat_id: company.clean_vat_id||'',
+      clean_company_name: company.clean_company_name||'', clean_user_name: company.clean_user_name||'',
+      company_id: company.company_id||'', geo_folder_id: company.geo_folder_id||''
     });
 
-    const rfqUrl = `https://speedx.com.pl/ftl_rfq/?${rfqParams}`;
-    const geoUrl = `https://speedx.com.pl/ftl_geo/?${geoParams}`;
-
-    // 6. Render
     container.innerHTML = `
       <div class="welcome">
         <div class="welcome-name">Welcome back, ${company.clean_user_name || 'Client'} 👋</div>
@@ -209,12 +269,12 @@ async function init() {
         <div class="kpi-card">
           <div class="kpi-label">RFQ Submissions</div>
           <div class="kpi-val">${myRfqs.length}</div>
-          <div class="kpi-sub">${myRfqs.filter(r => (r.status||'').toLowerCase().includes('completed')).length} completed</div>
+          <div class="kpi-sub">${myRfqs.filter(r=>(r.status||'').toLowerCase().includes('completed')).length} completed</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label">GEO Requests</div>
           <div class="kpi-val">${myGeos.length}</div>
-          <div class="kpi-sub">${myGeos.filter(r => (r.status||'').toLowerCase().includes('completed')).length} completed</div>
+          <div class="kpi-sub">${myGeos.filter(r=>(r.status||'').toLowerCase().includes('completed')).length} completed</div>
         </div>
       </div>
 
@@ -222,12 +282,12 @@ async function init() {
         <div class="action-card">
           <div class="action-title">📋 RFQ Analysis</div>
           <div class="action-desc">Submit tender documents for full AI-powered analysis. Receive a C-Level Executive Summary within minutes.</div>
-          <a href="${rfqUrl}" class="action-btn blue" target="_blank">Submit new RFQ →</a>
+          <a href="https://speedx.com.pl/ftl_rfq/?${rfqParams}" class="action-btn blue" target="_blank">Submit new RFQ →</a>
         </div>
         <div class="action-card">
           <div class="action-title">📍 GEO Distance Calculation</div>
           <div class="action-desc">Upload your transport lane file and get driving distances and geocoded coordinates for all routes.</div>
-          <a href="${geoUrl}" class="action-btn navy" target="_blank">Submit GEO request →</a>
+          <a href="https://speedx.com.pl/ftl_geo/?${geoParams}" class="action-btn navy" target="_blank">Submit GEO request →</a>
         </div>
       </div>
 
@@ -235,14 +295,27 @@ async function init() {
       <div class="table-card">
         ${myRfqs.length === 0 ? '<div class="empty">No RFQ submissions yet</div>' : `
         <table>
-          <thead><tr><th>RFQ Name</th><th>Submitted</th><th>Lanes</th><th>Status</th></tr></thead>
+          <thead><tr><th>RFQ Name</th><th>Submitted</th><th>Status</th><th>Reports</th></tr></thead>
           <tbody>
-            ${myRfqs.map(r => `<tr>
-              <td><strong>${r.rfq_name_clean || r.rfq_name_raw || '—'}</strong><br><span style="font-size:11px;color:var(--muted);font-family:var(--mono);">${r.submission_id}</span></td>
-              <td>${formatDate(r.created_at)}</td>
-              <td>${r.lane_selected_total ? `${Number(r.lane_selected_total).toLocaleString()} lanes` : '—'}</td>
-              <td>${statusBadge(r.status)}</td>
-            </tr>`).join('')}
+            ${myRfqs.map(r => {
+              const hasCLevel = !!r['A_level_rep_id'];
+              const hasBLevel = ['01','02','03','05','06','07','08','09','10'].some(s => !!r[`${s}_rep_file_id`]);
+              return `<tr>
+                <td>
+                  <strong>${r.rfq_name_clean||r.rfq_name_raw||'—'}</strong><br>
+                  <span style="font-size:11px;color:var(--muted);font-family:var(--mono);">${r.submission_id}</span>
+                </td>
+                <td>${formatDate(r.created_at)}</td>
+                <td>${statusBadge(r.status)}</td>
+                <td>
+                  <div class="btn-group">
+                    ${hasCLevel ? `<a href="https://drive.google.com/uc?id=${r['A_level_rep_id']}&export=download" target="_blank" class="dl-btn primary">⬇ Executive Summary</a>` : ''}
+                    ${hasBLevel ? `<button class="reports-btn" onclick="openReportsModal('${r.submission_id}')">📎 B-Level Reports</button>` : ''}
+                    ${!hasCLevel && !hasBLevel ? '<span style="color:var(--muted);font-size:12px;">Not ready yet</span>' : ''}
+                  </div>
+                </td>
+              </tr>`;
+            }).join('')}
           </tbody>
         </table>`}
       </div>
@@ -251,13 +324,21 @@ async function init() {
       <div class="table-card">
         ${myGeos.length === 0 ? '<div class="empty">No GEO requests yet</div>' : `
         <table>
-          <thead><tr><th>GEO Name</th><th>Submitted</th><th>Lanes</th><th>Status</th></tr></thead>
+          <thead><tr><th>GEO Name</th><th>Submitted</th><th>Lanes</th><th>Status</th><th>Results</th></tr></thead>
           <tbody>
             ${myGeos.map(r => `<tr>
-              <td><strong>${r.rfq_name_clean || '—'}</strong><br><span style="font-size:11px;color:var(--muted);font-family:var(--mono);">${r.submission_id}</span></td>
+              <td>
+                <strong>${r.rfq_name_clean||'—'}</strong><br>
+                <span style="font-size:11px;color:var(--muted);font-family:var(--mono);">${r.submission_id}</span>
+              </td>
               <td>${formatDate(r.created_at)}</td>
-              <td>${r.lane_selected_total ? `${Number(r.lane_selected_total).toLocaleString()} lanes` : '—'}</td>
+              <td>${r.lane_selected_total ? Number(r.lane_selected_total).toLocaleString() : '—'}</td>
               <td>${statusBadge(r.status)}</td>
+              <td>
+                ${r.geo_results_file_id
+                  ? `<a href="https://drive.google.com/uc?id=${r.geo_results_file_id}&export=download" target="_blank" class="dl-btn primary">⬇ Download Results</a>`
+                  : '<span style="color:var(--muted);font-size:12px;">Not ready yet</span>'}
+              </td>
             </tr>`).join('')}
           </tbody>
         </table>`}
