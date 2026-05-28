@@ -311,7 +311,7 @@ async function init() {
                   <div class="btn-group">
                     ${hasCLevel ? `<a href="https://drive.google.com/uc?id=${r['A_level_rep_id']}&export=download" target="_blank" class="dl-btn primary">⬇ Executive Summary</a>` : ''}
                     ${hasBLevel ? `<button class="reports-btn" onclick="openReportsModal('${r.submission_id}')">📎 B-Level Reports</button>` : ''}
-                    ${r['geo_results_file_id'] ? `<a href="https://drive.google.com/uc?id=${r['geo_results_file_id']}&export=download" target="_blank" class="dl-btn">⬇ GEO Report</a>` : ''}
+                    ${r['geo_results_file_id'] ? `<a href="https://docs.google.com/spreadsheets/d/${r['geo_results_file_id']}/export?format=xlsx" target="_blank" class="dl-btn">⬇ GEO Report</a>` : ''}
                     ${!hasCLevel && !hasBLevel ? '<span style="color:var(--muted);font-size:12px;">Not ready yet</span>' : ''}
                   </div>
                 </td>
