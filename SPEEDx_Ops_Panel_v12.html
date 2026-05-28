@@ -419,7 +419,7 @@ function renderTable() {
   }
   const html = rows.map(row => {
     const flows = getFlowStatus(row);
-    const company = row.clean_organizer_name || row.organizer_name || '—';
+    const company = row.clean_company_name || row.company_id || '—';
     const rfqName = row.rfq_name_clean || row.rfq_name_raw || '—';
     const sid = row.submission_id || '—';
     const flowPills = ['F4','F5','F7'].map(f => `<div class="flow-pill ${flows[f]}" title="${f}: ${flows[f]}">${f}</div>`).join('');
