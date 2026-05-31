@@ -367,9 +367,7 @@ async function loadClients() {
     const rows = await fetchSheet('companies');
     allClients = rows.filter(r => r.company_id);
     // Sortuj newest first po created_at
-    allClients.sort((a, b) => {
-      const da = parseDate(a.created_at);
-      const db = parseDate(b.created_at);
+allClients.sort((a, b) => String(b.created_at||'').localeCompare(String(a.created_at||'')));
       if (!da && !db) return 0;
       if (!da) return 1;
       if (!db) return -1;
@@ -447,7 +445,7 @@ function renderTable() {
     }
     return true;
   });
-  rows.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+  rows.sort((a, b) => String(b.created_at||'').localeCompare(String(a.created_at||'')));
   if (!rows.length) {
     document.getElementById('table-body').innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No submissions found</div></div></td></tr>`;
     return;
@@ -501,7 +499,7 @@ function renderGeo() {
     document.getElementById('geo-body').innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📍</div><div class="empty-text">No GEO requests found</div></div></td></tr>`;
     return;
   }
-  const rows = [...allGeoRows].sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+const rows = [...allGeoRows].sort((a,b) => String(b.created_at||'').localeCompare(String(a.created_at||'')));
   const html = rows.map(row => {
     const s = (row.status || '').toLowerCase();
     const statusBadge = s.includes('completed')
