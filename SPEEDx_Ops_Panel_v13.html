@@ -366,13 +366,7 @@ async function loadClients() {
   try {
     const rows = await fetchSheet('companies');
     allClients = rows.filter(r => r.company_id);
-    // Sortuj newest first po created_at
-allClients.sort((a, b) => String(b.created_at||'').localeCompare(String(a.created_at||'')));
-      if (!da && !db) return 0;
-      if (!da) return 1;
-      if (!db) return -1;
-      return db - da;
-    });
+    allClients.sort((a, b) => String(b.created_at||'').localeCompare(String(a.created_at||'')));
     renderClients();
   } catch(e) { toast('Failed to load companies: ' + e.message, 'error'); }
   if (btn) btn.innerHTML = '↻ Refresh';
