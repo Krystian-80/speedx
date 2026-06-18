@@ -160,6 +160,12 @@ td { padding: 11px 14px; font-size: 14px; vertical-align: middle; }
       <button class="nav-item" onclick="refreshCurrent()">
         <span class="nav-icon">🔄</span> Refresh
       </button>
+        <button class="nav-item" onclick="refreshCurrent()">
+        <span class="nav-icon">🔄</span> Refresh
+      </button>
+      <a class="nav-item" href="https://speedx.app.n8n.cloud/webhook/geo-qa" target="_blank" style="text-decoration:none;">
+        <span class="nav-icon">🗺</span> Route QA
+      </a>
     </div>
   </div>
 
@@ -495,7 +501,8 @@ function openGeoModal(sid) {
   document.getElementById('geo-modal-sub').textContent = (row.clean_organizer_name||'—') + ' · ' + sid;
   document.getElementById('geo-modal-actions-top').innerHTML = `
     <button class="modal-btn" onclick="restartGeo3('${sid}')">🔄 Restart GEO3</button>
-    <button class="modal-btn danger" onclick="resetGeoLaneSelection('${sid}')">↩ Reset lane selection</button>`;
+    <button class="modal-btn danger" onclick="resetGeoLaneSelection('${sid}')">↩ Reset lane selection</button>
+    <a class="modal-btn" href="https://speedx.app.n8n.cloud/webhook/geo-qa" target="_blank" style="border-color:var(--green);color:var(--green);text-decoration:none;">🗺 Route maps</a>`;
   let selectedPairs = '—';
   try { selectedPairs = row.lane_selected_pairs ? JSON.parse(row.lane_selected_pairs).map(p => p.lane_group).join(', ') : '—'; } catch(e) {}
   document.getElementById('geo-modal-body').innerHTML = [
